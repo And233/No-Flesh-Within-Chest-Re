@@ -1,4 +1,4 @@
-// priority: 10
+// priority: 500
 const playerAttributeMap = new Map()
 /**
  * 历史背景：激活效果在历史中用于解决实际中属性变化与激活效果触发节点不同的问题
@@ -140,7 +140,7 @@ const organActiveStrategies = {
     'kubejs:revolution_cable': function (player, organ, attributeMap) {
         let typeMap = getPlayerChestCavityTypeMap(player)
         if (typeMap.has('kubejs:revolution')) {
-            let value = typeMap.get('kubejs:revolution').length * 1
+            let value = typeMap.get('kubejs:revolution').length * 2
             attributeMapValueAddition(attributeMap, global.HEALTH_UP, value)
         }
     },
@@ -357,25 +357,6 @@ const organActiveOnlyStrategies = {
     'kubejs:nether_star_shard': function (player, organ, attributeMap) {
         attributeMapValueAddition(attributeMap, global.CRITICAL_HIT, 0.1)
     },
-    'kubejs:wrath_shard': function (player, organ, attributeMap) {
-        attributeMapValueAddition(attributeMap, global.CRITICAL_HIT, -0.5)
-        attributeMapValueAddition(attributeMap, global.CRITICAL_DAMAGE, 3)
-    },
-    'kubejs:sloth_shard': function (player, organ, attributeMap) {
-        attributeMapValueAddition(attributeMap, global.KNOCKBACK_RESISTANCE, 0.9)
-    },
-    'kubejs:envy_shard': function (player, organ, attributeMap) {
-        attributeMapValueAddition(attributeMap, global.CRITICAL_DAMAGE, 1.2)
-    },
-    'kubejs:gluttony_shard': function (player, organ, attributeMap) {
-        attributeMapValueAddition(attributeMap, global.REGENERATION, 0.8)
-    },
-    'kubejs:lust_shard': function (player, organ, attributeMap) {
-        attributeMapValueAddition(attributeMap, global.MAX_MANA, 200)
-    },
-    'kubejs:pride_shard': function (player, organ, attributeMap) {
-        attributeMapValueAddition(attributeMap, global.SUMMON_DAMAGE, 0.5)
-    },
     'kubejs:infinity_force': function (player, organ, attributeMap) {
         if (organ.tag?.forgeTimes) {
             let value = organ.tag.forgeTimes * 1
@@ -472,8 +453,6 @@ const organActiveOnlyStrategies = {
         playerChestCavityTypeMap.set(uuid, chestInventoryTypeMap)
     },
     'kubejs:fish_in_chest': function (player, organ, attributeMap) {
-        let itemMap = getPlayerChestCavityItemMap(player)
-        let typeMap = getPlayerChestCavityTypeMap(player)
         let playerChestInstance = player.getChestCavityInstance()
         let organCount = getOrganCount(player)
         let amplifier = 27 / organCount - 1
@@ -490,6 +469,13 @@ const organActiveOnlyStrategies = {
         let breathCapacity = instance.organScores.getOrDefault(new ResourceLocation('chestcavity', 'breath_capacity'), 0) * 1.5
         instance.organScores.put(new ResourceLocation('chestcavity', 'breath_capacity'), new $Float(breathCapacity))
     },
+    'kubejs:hydra_fiery_blood_essence': function (player, organ, attributeMap) {
+        let temperature = ColdSweat.getTemperature(player, "body")
+        let instance = player.getChestCavityInstance()
+        let breathCapacity = instance.organScores.getOrDefault(new ResourceLocation('chestcavity', 'breath_capacity'), 0) * 1.5
+        instance.organScores.put(new ResourceLocation('chestcavity', 'breath_capacity'), new $Float(breathCapacity))
+    },
+
 }
 
 

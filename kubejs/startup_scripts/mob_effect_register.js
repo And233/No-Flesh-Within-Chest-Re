@@ -1,3 +1,4 @@
+// priority: 100
 /**
  * @param {Internal.LivingEntity} entity 
  */
@@ -13,11 +14,13 @@ function godPardonEffectIncr(entity) {
 StartupEvents.registry('mob_effect', event => {
     event.create('burning_heart')
         .beneficial()
+        .modifyAttribute("cold_sweat:world_temperature", 'kubejsBurningHeart', 10 / 25, 'addition')
         .color(Color.DARK_RED)
 
     event.create('flaring_heart')
         .beneficial()
         .color(Color.RED)
+        .modifyAttribute("cold_sweat:world_temperature", 'kubejsFlaringHeart', 10 / 25, 'addition')
 
     event.create('sweet_dream')
         .beneficial()
@@ -49,7 +52,7 @@ StartupEvents.registry('mob_effect', event => {
                 if (entity.health < entity.maxHealth * 0.67) {
                     entity.level.getEntitiesWithin(AABB.of(entity.x - 10, entity.y - 10, entity.z - 10, entity.x + 10, entity.y + 10, entity.z + 10)).forEach(player => {
                         if (player.isPlayer()) {
-                            player.tell(Text.gray('它的身体似乎发生了什么变化. . .'))
+                            player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.pardon_of_god.1' }))
                         }
                     })
                     entity.removeEffect('kubejs:glimpse_of_god')
@@ -69,7 +72,7 @@ StartupEvents.registry('mob_effect', event => {
                 if (entity.health < entity.maxHealth * 0.33) {
                     entity.level.getEntitiesWithin(AABB.of(entity.x - 10, entity.y - 10, entity.z - 10, entity.x + 10, entity.y + 10, entity.z + 10)).forEach(player => {
                         if (player.isPlayer()) {
-                            player.tell(Text.gray('它的身体似乎发生了什么变化. . .'))
+                            player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.pardon_of_god.1' }))
                         }
                     })
                     entity.removeEffect('kubejs:gaze_of_god')
@@ -89,7 +92,7 @@ StartupEvents.registry('mob_effect', event => {
                 if (entity.getEffect('kubejs:glare_of_god').getDuration() < 41) {
                     entity.level.getEntitiesWithin(AABB.of(entity.x - 10, entity.y - 10, entity.z - 10, entity.x + 10, entity.y + 10, entity.z + 10)).forEach(player => {
                         if (player.isPlayer()) {
-                            player.tell(Text.gray('它的身体似乎发生了什么变化. . .'))
+                            player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.pardon_of_god.1' }))
                         }
                     })
                     entity.removeEffect('kubejs:glare_of_god')
@@ -129,4 +132,42 @@ StartupEvents.registry('mob_effect', event => {
     event.create('dragon_power')
         .beneficial()
         .color(Color.DARK_PURPLE)
+
+    event.create('heat_up')
+        .beneficial()
+        .color(Color.RED)
+        .effectTick((entity, lvl) => {
+            if (!entity || entity.level.isClientSide()) return
+            if (entity.hasEffect('kubejs:cold_down')) {
+                entity.removeEffect('kubejs:cold_down')
+            }
+        })
+        .modifyAttribute("cold_sweat:world_temperature", 'kubejsHeatUp', 5 / 25, 'addition')
+
+    event.create('cold_down')
+        .beneficial()
+        .color(Color.BLUE)
+        .effectTick((entity, lvl) => {
+            if (!entity || entity.level.isClientSide()) return
+            if (entity.hasEffect('kubejs:cold_down')) {
+                entity.removeEffect('kubejs:heat_up')
+            }
+        })
+        .modifyAttribute("cold_sweat:world_temperature", 'kubejsColdDown', -5 / 25, 'addition')
+
+    event.create('overload')
+        .beneficial()
+        .color(Color.RED)
+        .modifyAttribute("minecraft:generic.attack_damage", 'kubejsOverload', 1 / 8, 'multiply_base')
+        .modifyAttribute("minecraft:generic.attack_speed", 'kubejsOverload', 1, 'addition')
+        .modifyAttribute("minecraft:generic.movement_speed", 'kubejsOverload', 0.001, 'addition')
+
+    event.create('ice')
+        .beneficial()
+        .color(Color.BLUE)
+        .modifyAttribute("irons_spellbooks:cooldown_reduction", 'kubejsIce', 1 / 8, 'addition')
+        .modifyAttribute("irons_spellbooks:mana_regen", 'kubejsIce', 1, 'addition')
+        .modifyAttribute("irons_spellbooks:spell_power", 'kubejsIce', -0.05, 'multiply_total')
+        .modifyAttribute("irons_spellbooks:cast_time_reduction", 'kubejsIce', 1 / 8, 'addition')
+
 })

@@ -1,4 +1,4 @@
-// priority: 1
+// priority: 500
 
 const playerChestCavityHashMap = new Map();
 const playerChestCavityPosMap = new Map();
@@ -45,6 +45,8 @@ PlayerEvents.inventoryClosed((event) => {
         return
     }
     global.initChestCavityIntoMap(player, true)
+
+
     let itemMap = getPlayerChestCavityItemMap(player)
     if (player.persistentData.contains(organActive) && player.persistentData.getInt(organActive) == 1) {
         return

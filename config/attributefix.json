@@ -1,16 +1,5 @@
 {
   "attributes": {
-    "obscure_api:penetration": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
-      }
-    },
     "forge:attack_range": {
       "enabled": false,
       "min": {
@@ -44,28 +33,6 @@
         "value": 2048
       }
     },
-    "witherstormmod:evolution_speed": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 1024,
-        "value": 1024
-      }
-    },
-    "obscure_api:dodge": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
-      }
-    },
     "irons_spellbooks:nature_spell_power": {
       "enabled": false,
       "min": {
@@ -75,17 +42,6 @@
       "max": {
         "default": 10,
         "value": 10
-      }
-    },
-    "obscure_api:resilience": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
       }
     },
     "forge:entity_gravity": {
@@ -99,6 +55,17 @@
         "value": 8
       }
     },
+    "cold_sweat:base_temperature": {
+      "enabled": false,
+      "min": {
+        "default": NaN,
+        "value": NaN
+      },
+      "max": {
+        "default": Infinity,
+        "value": Infinity
+      }
+    },
     "tetra:ability_damage": {
       "enabled": false,
       "min": {
@@ -110,17 +77,6 @@
         "value": 2048
       }
     },
-    "witherstormmod:target_stationary_flying_speed": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 2,
-        "value": 2
-      }
-    },
     "irons_spellbooks:nature_magic_resist": {
       "enabled": false,
       "min": {
@@ -130,17 +86,6 @@
       "max": {
         "default": 10,
         "value": 10
-      }
-    },
-    "obscure_api:regeneration": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100000,
-        "value": 100000
       }
     },
     "irons_spellbooks:lightning_magic_resist": {
@@ -165,6 +110,28 @@
         "value": 10
       }
     },
+    "cold_sweat:heat_resistance": {
+      "enabled": false,
+      "min": {
+        "default": 0,
+        "value": 0
+      },
+      "max": {
+        "default": 1,
+        "value": 1
+      }
+    },
+    "cataclysm_spellbooks:abyssal_magic_resist": {
+      "enabled": false,
+      "min": {
+        "default": 0,
+        "value": 0
+      },
+      "max": {
+        "default": 10,
+        "value": 10
+      }
+    },
     "minecraft:generic.luck": {
       "enabled": true,
       "min": {
@@ -174,17 +141,6 @@
       "max": {
         "default": 1024,
         "value": 1024
-      }
-    },
-    "witherstormmod:slow_flying_speed": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 2,
-        "value": 2
       }
     },
     "kubejs:candy_spell_resistance": {
@@ -209,26 +165,26 @@
         "value": 10
       }
     },
-    "witherstormmod:hunchback_follow_range": {
+    "kubejs:critical_damage": {
       "enabled": false,
       "min": {
-        "default": 0,
-        "value": 0
+        "default": -1024,
+        "value": -1024
       },
       "max": {
-        "default": 2048,
-        "value": 2048
+        "default": 1024,
+        "value": 1024
       }
     },
-    "obscure_api:magic_resistance": {
+    "cataclysm_spellbooks:abyssal_spell_power": {
       "enabled": false,
       "min": {
         "default": 0,
         "value": 0
       },
       "max": {
-        "default": 100,
-        "value": 100
+        "default": 10,
+        "value": 10
       }
     },
     "irons_spellbooks:summon_damage": {
@@ -253,17 +209,6 @@
         "value": 100
       }
     },
-    "obscure_api:magic_damage": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100000,
-        "value": 100000
-      }
-    },
     "forge:reach_distance": {
       "enabled": false,
       "min": {
@@ -275,6 +220,17 @@
         "value": 1024
       }
     },
+    "cold_sweat:cold_dampening": {
+      "enabled": false,
+      "min": {
+        "default": -Infinity,
+        "value": -Infinity
+      },
+      "max": {
+        "default": 1,
+        "value": 1
+      }
+    },
     "tetra:draw_strength": {
       "enabled": false,
       "min": {
@@ -284,17 +240,6 @@
       "max": {
         "default": 2048,
         "value": 2048
-      }
-    },
-    "obscure_api:healing_power": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
       }
     },
     "irons_spellbooks:cast_time_reduction": {
@@ -328,6 +273,17 @@
       "max": {
         "default": 10,
         "value": 10
+      }
+    },
+    "cold_sweat:heat_dampening": {
+      "enabled": false,
+      "min": {
+        "default": -Infinity,
+        "value": -Infinity
+      },
+      "max": {
+        "default": 1,
+        "value": 1
       }
     },
     "kubejs:magnificent_spell_power": {
@@ -372,6 +328,17 @@
       "max": {
         "default": 5,
         "value": 1000000
+      }
+    },
+    "cold_sweat:freezing_point": {
+      "enabled": false,
+      "min": {
+        "default": -Infinity,
+        "value": -Infinity
+      },
+      "max": {
+        "default": Infinity,
+        "value": Infinity
       }
     },
     "kubejs:candy_spell_power": {
@@ -427,17 +394,6 @@
       "max": {
         "default": 2048,
         "value": 2048
-      }
-    },
-    "obscure_api:accuracy": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
       }
     },
     "irons_spellbooks:fire_magic_resist": {
@@ -539,17 +495,6 @@
         "value": 10
       }
     },
-    "obscure_api:parry": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
-      }
-    },
     "minecraft:generic.attack_speed": {
       "enabled": true,
       "min": {
@@ -581,6 +526,17 @@
       "max": {
         "default": 10,
         "value": 10
+      }
+    },
+    "cold_sweat:world_temperature": {
+      "enabled": false,
+      "min": {
+        "default": NaN,
+        "value": NaN
+      },
+      "max": {
+        "default": Infinity,
+        "value": Infinity
       }
     },
     "minecraft:generic.armor": {
@@ -616,17 +572,6 @@
         "value": 10
       }
     },
-    "obscure_api:critical_hit": {
-      "enabled": false,
-      "min": {
-        "default": 0,
-        "value": 0
-      },
-      "max": {
-        "default": 100,
-        "value": 100
-      }
-    },
     "modulargolems:golem_regen": {
       "enabled": false,
       "min": {
@@ -636,6 +581,17 @@
       "max": {
         "default": 1000,
         "value": 1000
+      }
+    },
+    "kubejs:critical_hit": {
+      "enabled": false,
+      "min": {
+        "default": -1024,
+        "value": -1024
+      },
+      "max": {
+        "default": 1024,
+        "value": 1024
       }
     },
     "minecraft:generic.flying_speed": {
@@ -682,15 +638,15 @@
         "value": 1
       }
     },
-    "obscure_api:critical_damage": {
+    "cold_sweat:cold_resistance": {
       "enabled": false,
       "min": {
         "default": 0,
         "value": 0
       },
       "max": {
-        "default": 100,
-        "value": 100
+        "default": 1,
+        "value": 1
       }
     },
     "irons_spellbooks:spell_resist": {
@@ -724,6 +680,17 @@
       "max": {
         "default": 10,
         "value": 10
+      }
+    },
+    "cold_sweat:burning_point": {
+      "enabled": false,
+      "min": {
+        "default": -Infinity,
+        "value": -Infinity
+      },
+      "max": {
+        "default": Infinity,
+        "value": Infinity
       }
     },
     "irons_spellbooks:ice_magic_resist": {

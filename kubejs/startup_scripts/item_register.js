@@ -1,3 +1,4 @@
+// priority: 100
 StartupEvents.registry('item', event => {
     event.create('scrap').texture('kubejs:item/scrap')
     event.create('fire_gem').texture('kubejs:item/fire_gem')
@@ -12,12 +13,6 @@ StartupEvents.registry('item', event => {
     event.create('exclamation_mark').texture('kubejs:item/exclamation_mark')
     event.create('full_mark').texture('kubejs:item/full_mark')
     event.create('ritual_catalyst').texture('kubejs:item/ritual_catalyst')
-    event.create('secret_of_origin').texture('kubejs:item/secret_of_origin').maxStackSize(1)
-    event.create('secret_of_rain').texture('kubejs:item/secret_of_rain').tag('kubejs:secret').maxStackSize(1)
-    event.create('secret_of_heart').texture('kubejs:item/secret_of_heart').tag('kubejs:secret').maxStackSize(1)
-    event.create('secret_of_bloom').texture('kubejs:item/secret_of_bloom').tag('kubejs:secret').maxStackSize(1)
-    event.create('secret_of_snow').texture('kubejs:item/secret_of_snow').tag('kubejs:secret').maxStackSize(1)
-    event.create('secret_of_void').texture('kubejs:item/secret_of_void').tag('kubejs:secret').maxStackSize(1)
     event.create('lime_powder').texture('kubejs:item/lime_powder')
 
     event.create('god_bless_empty_necklace').texture('kubejs:item/god_bless_empty_necklace').maxStackSize(1).tag('curios:necklace').tag('itemborders:gold')
@@ -37,6 +32,9 @@ StartupEvents.registry('item', event => {
         food.hunger(4).saturation(1).alwaysEdible()
         food.effect('minecraft:regeneration', 20 * 30, 1, 1)
     })
+
+    event.create('colorful_candy').texture('kubejs:item/colorful_candy').tag('extradelight:candy_bowl_valid').food(food => { food.hunger(1).saturation(1).alwaysEdible().effect('kubejs:sweet_dream', 20 * 5, 0, 1) }).tag('supplementaries:cookies')
+
     event.create('brown_sauce_braised_intestines').texture('kubejs:item/brown_sauce_braised_intestines').food(food => {
         food.hunger(6).saturation(1.5).alwaysEdible()
         food.effect('minecraft:regeneration', 20 * 45, 0, 1)
@@ -73,16 +71,16 @@ StartupEvents.registry('item', event => {
             .saturation(1)
             .alwaysEdible()
             .eaten(ctx => {
-                if (ctx.level.isClientSide()) return;
+                if (ctx.level.isClientSide()) return
                 global.updatePlayerActiveStatus(ctx.player)
                 ctx.player.persistentData.putInt('organActive', 1)
-            });
+            })
     })
 
     event.create('lucky_cookie').texture('kubejs:item/organs/food/lucky_cookie').food(food => {
         food.hunger(1).saturation(1).alwaysEdible().eaten(event => {
             if (!event.player) return
-            event.server.runCommandSilent(`/title ${event.player.name.getString()} title {"text":"${randomGet(luckyCookieSentence)}"}`)
+            event.player.server.runCommandSilent(`/title ${event.player.name.getString()} title {"translate":"${randomGet(luckyCookieSentence)}"}`)
             if (Math.random() < 0.02) {
                 event.player.give(Item.of('kubejs:lucky_cookie_organ'))
             }
@@ -93,14 +91,14 @@ StartupEvents.registry('item', event => {
         .useAnimation('bow')
         .useDuration(itemStack => 40)
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .finishUsing((itemstack, level, entity) => {
             if (level.isClientSide()) return itemstack
-            entity.attack(5);
+            entity.attack(5)
             entity.potionEffects.add('irons_spellbooks:instant_mana', 1, 2)
             entity.addItemCooldown(itemstack, 20 * 15)
-            return itemstack;
+            return itemstack
         })
 
 
@@ -109,7 +107,7 @@ StartupEvents.registry('item', event => {
         .useAnimation('bow')
         .useDuration(itemStack => 40)
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .finishUsing((itemstack, level, entity) => {
             if (level.isClientSide()) return itemstack
@@ -117,21 +115,17 @@ StartupEvents.registry('item', event => {
                 let friend = Utils.server.getPlayer(itemstack.nbt.friendName)
                 if (friend && friend.isLiving()) {
                     let targetDim = friend.level.getDimension()
-                    if (targetDim == 'dimdungeons:build_dimension') {
-                        entity.tell('无法传送，目标维度不可用。')
-                        return itemstack;
-                    }
                     entity.teleportTo(targetDim, friend.x, friend.y, friend.z, 0, 0)
                     entity.addItemCooldown(itemstack, 20 * 10)
                 } else {
-                    entity.tell('无法传送，对方可能不在线/处于死亡状态。')
+                    entity.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.friend_to_the_end.1' }))
                 }
             } else {
-                entity.tell('已将该戒指绑定到你的身上！')
+                entity.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.friend_to_the_end.2' }))
                 itemstack.setNbt({ friendName: entity.getUsername() })
-                return itemstack;
+                return itemstack
             }
-            return itemstack;
+            return itemstack
         })
 
     event.create('candy_canes_wand', 'basic').texture('kubejs:item/candy_canes_wand')
@@ -140,7 +134,7 @@ StartupEvents.registry('item', event => {
         .rarity('epic')
         .useAnimation('eat')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
@@ -148,7 +142,7 @@ StartupEvents.registry('item', event => {
             entity.playSound('entity.player.burp')
             entity.eat(level, Item.of('kubejs:candy'))
             entity.addItemCooldown(itemstack, 20 * 30)
-            return itemstack;
+            return itemstack
         })
 
     event.create('rapier_wand', 'irons_spells_js:magic_sword').tier('diamond')
@@ -162,14 +156,14 @@ StartupEvents.registry('item', event => {
         .rarity('epic')
         .useAnimation('bow')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
             if (level.isClientSide()) return itemstack
             entity.potionEffects.add('irons_spellbooks:instant_mana', 1, 2)
             entity.addItemCooldown(itemstack, 20 * 60)
-            return itemstack;
+            return itemstack
         })
 
     event.create('artist_wand', 'irons_spells_js:magic_sword')
@@ -183,14 +177,14 @@ StartupEvents.registry('item', event => {
         .rarity('epic')
         .useAnimation('bow')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
             if (level.isClientSide()) return itemstack
             entity.potionEffects.add('kubejs:colorful', 20 * 20, 0)
             entity.addItemCooldown(itemstack, 20 * 60)
-            return itemstack;
+            return itemstack
         })
 
 
@@ -210,7 +204,7 @@ StartupEvents.registry('item', event => {
         .rarity('epic')
         .useAnimation('drink')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
@@ -234,13 +228,13 @@ StartupEvents.registry('item', event => {
                 entity.potionEffects.add('minecraft:slowness', 20 * 12, 0)
             }
             entity.addItemCooldown(itemstack, 20 * 60)
-            return itemstack;
+            return itemstack
         })
 
     event.create('blood_extractor').texture('kubejs:item/blood_extractor').maxStackSize(1)
         .useAnimation('bow')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
@@ -256,13 +250,13 @@ StartupEvents.registry('item', event => {
             })
             entity.give(Item.of('kubejs:glass_vial', nbt))
             entity.addItemCooldown(itemstack, 20 * 15)
-            return itemstack;
+            return itemstack
         })
 
     event.create('glass_vial').texture('kubejs:item/glass_vial').maxStackSize(1)
         .useAnimation('bow')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
@@ -272,26 +266,26 @@ StartupEvents.registry('item', event => {
                 entity.tell([LEADING_SYMBOL, Text.yellow(global.SCORE_MAP[key]).hover(global.SCORE_HOVER_MAP[key]), Text.white(' : '), Text.white(itemstack.nbt.organSocres[key])])
             })
             entity.addItemCooldown(itemstack, 20 * 15)
-            return itemstack;
+            return itemstack
         })
 
     event.create('holy_potion').texture('kubejs:item/holy_potion').maxStackSize(1)
         .rarity('epic')
         .useAnimation('drink')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
             if (level.isClientSide()) return itemstack
             entity.server.runCommandSilent(`/lichdom revoke ${entity.name.getString()}`)
-            return;
+            return
         })
 
     event.create('operation_box').texture('kubejs:item/operation_box').maxStackSize(1)
         .useAnimation('bow')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
@@ -318,7 +312,7 @@ StartupEvents.registry('item', event => {
                 global.updatePlayerActiveStatus(entity)
                 entity.persistentData.putInt(organActive, 1)
             }
-            entity.tell('器官已替换')
+            entity.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.operation_box.1' }))
             return itemstack
         })
 
@@ -329,7 +323,7 @@ StartupEvents.registry('item', event => {
         .maxStackSize(16)
         .useAnimation('bow')
         .use((level, player, hand) => {
-            return true;
+            return true
         })
         .useDuration(itemStack => 20)
         .finishUsing((itemstack, level, entity) => {
@@ -340,9 +334,4 @@ StartupEvents.registry('item', event => {
             itemstack.shrink(1)
             return itemstack
         })
-
-    event.create('command_spell_book', 'irons_spells_js:spellbook')
-        .setMaxSpellSlots(15)
-        .addDefaultSpell('kubejs:earth_without_earth', 1)
-        .addDefaultAttribute('irons_spellbooks:spell_power', 'commandBookSpellPower', 0.5, 'addition')
 })

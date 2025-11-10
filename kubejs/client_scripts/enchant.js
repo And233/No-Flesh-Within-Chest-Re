@@ -1,3 +1,4 @@
+// priority: 500
 MoreJSEvents.enchantmentTableTooltip((event) => {
     event.lines.removeIf(x => {
         return true
@@ -10,4 +11,4 @@ MoreJSEvents.enchantmentTableTooltip((event) => {
     } else {
         event.lines.add([Text.gray(Text.translate(event.clue.enchantment.descriptionId)), Text.gray('. . .?')])
     }
-});
+})

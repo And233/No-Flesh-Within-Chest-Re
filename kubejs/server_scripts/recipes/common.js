@@ -1,3 +1,4 @@
+// priority: 800
 ServerEvents.recipes(event => {
     event.remove({ mod: 'nameless_trinkets' })
     event.remove({ mod: 'somebosses' })
@@ -16,6 +17,9 @@ ServerEvents.recipes(event => {
     event.remove({ output: 'extraarmor:blacksmith_hammer' })
     event.remove({ output: 'alexsmobs:transmutation_table' })
     event.remove({ output: 'weaponmaster:workstation' })
+    event.remove({ output: 'twilightforest:uncrafting_table' })
+    event.remove({ output: 'cold_sweat:boiler' })
+    event.remove({ output: 'twilightforest:uncrafting_table' })
 
     event.shaped('weaponmaster:workstation', [
         ['minecraft:lectern', 'minecraft:writable_book', '#minecraft:anvil'],
@@ -60,17 +64,23 @@ ServerEvents.recipes(event => {
             O: 'minecraft:raw_copper'
         })
 
+    event.shaped(Item.of('kubejs:organ_recycler', 1), [
+        'OOO',
+        'OCO',
+        'OMO'
+    ],
+        {
+            C: '#kubejs:organ',
+            O: 'lightmanscurrency:coin_iron',
+            M: 'wares:delivery_table'
+        })
+
     event.shaped('cataclysm:meat_shredder', [
-        ['', 'minecraft:nether_star', 'goety:philosophers_stone'],
-        ['', 'witherstormmod:withered_nether_star', 'minecraft:nether_star'],
+        ['', 'twilightforest:fiery_ingot', 'goety:philosophers_stone'],
+        ['', 'twilightforest:charm_of_keeping_3', 'minecraft:nether_star'],
         ['cataclysm:witherite_ingot', '', '']
     ])
 
-    event.shaped('dimdungeons:block_key_charger', [
-        ['hexerei:selenite_shard', 'hexerei:wax_blend', 'hexerei:selenite_shard'],
-        ['minecraft:end_stone', 'minecraft:end_crystal', 'minecraft:end_stone'],
-        ['#forge:obsidian', '#forge:obsidian', '#forge:obsidian']
-    ])
 
     event.shaped('minecraft:elytra', [
         ['', 'alexsmobs:banana_slug_slime', ''],
@@ -105,18 +115,21 @@ ServerEvents.recipes(event => {
         ['kubejs:dark_stardust_fragment', 'irons_spellbooks:scroll', 'kubejs:dark_stardust_fragment'],
         ['', 'kubejs:dark_stardust_fragment', '']])
         .modifyResult((grid, stack) => {
+            /**@type {Internal.ItemStack} */
             let scroll = grid.find('irons_spellbooks:scroll', 0)
-            if (!scroll.nbt?.ISB_Spells?.data || !scroll.nbt.ISB_Spells.data[0]) {
-                return;
-            }
-            let curScroll = scroll.nbt.ISB_Spells.data[0].getInt('level') + 1
-            if (curScroll >= 15) {
+            if (!scroll.hasNBT()) return
+            if (!scroll.nbt.ISB_Spells?.data || !scroll.nbt.ISB_Spells.data[0]) {
                 return
             }
-            scroll.nbt.ISB_Spells.data[0].putInt('level', curScroll)
-            stack = scroll
-            return stack;
-        });
+            let curScrollLevel = scroll.nbt.ISB_Spells.data[0].getInt('level') + 1
+            if (curScrollLevel >= 15) {
+                return
+            }
+            let outputNbt = scroll.nbt.copy()
+            outputNbt.ISB_Spells.data[0].putInt('level', curScrollLevel)
+            stack = Item.of(scroll.id, 1, outputNbt)
+            return stack
+        })
 
     event.shapeless('kubejs:paradise_regained', ['kubejs:god_consciousness', 'kubejs:god_consciousness', 'kubejs:god_consciousness'])
         .modifyResult((grid, stack) => {
@@ -125,10 +138,10 @@ ServerEvents.recipes(event => {
             let nbt3 = grid.find('kubejs:god_consciousness', 2).nbt
             if ((nbt1?.mobType != nbt2?.mobType) && (nbt2?.mobType != nbt3?.mobType) && (nbt3?.mobType != nbt1?.mobType)) {
                 stack = Item.of('kubejs:paradise_regained')
-                return stack;
+                return stack
             }
-            return;
-        });
+            return
+        })
 
     event.shapeless('kubejs:infinity_force', ['kubejs:infinity_force', 'kubejs:infinity_force'])
         .modifyResult((grid, stack) => {
@@ -137,28 +150,29 @@ ServerEvents.recipes(event => {
             if ((item1.nbt?.forgeTimes ?? 0) == (item2.nbt?.forgeTimes ?? 0)) {
                 let forgeTimes = item1.nbt?.forgeTimes ?? 0
                 stack = Item.of('kubejs:infinity_force', { forgeTimes: forgeTimes + 1 })
-                return stack;
+                return stack
             }
-            return;
-        });
+            return
+        })
 
     event.shapeless('kubejs:lucky_cookie', ['minecraft:paper', 'minecraft:cookie'])
-    event.shapeless('kubejs:eye_of_village', ['minecraft:ender_pearl', 'minecraft:emerald'])
-    event.shapeless('kubejs:eye_of_fortress', ['minecraft:ender_pearl', 'minecraft:magma_cream'])
+    event.shapeless(Item.of('kubejs:eye_of_village', 3), ['minecraft:ender_pearl', 'minecraft:emerald'])
+    event.shapeless(Item.of('kubejs:eye_of_fortress', 3), ['minecraft:ender_pearl', 'minecraft:magma_cream'])
+    event.shapeless(Item.of('kubejs:eye_of_dragon', 3), ['minecraft:ender_pearl', 'iceandfire:dragonbone'])
     event.shapeless('kubejs:mosquito_repellent', ['irons_spellbooks:magic_cloth', 'chestcavity:cooked_alien_organ_meat'])
 
     event.shapeless('chestcavity:sausage_skin', ['#kubejs:intestine'])
 
-    event.shapeless(Item.of('chestcavity:appendix').withName(Text.gray(Text.translatable("kubejs.recipe.tip.1"))), [Ingredient.of(['@chestcavity', '#kubejs:organ']), 'biomancy:healing_additive'])
+    event.shapeless(Item.of('chestcavity:appendix').withName($Serializer.fromJsonLenient({ translate: "kubejs.recipe.tip.1" })), [Ingredient.of(['@chestcavity', '#kubejs:organ']), 'biomancy:healing_additive'])
         .modifyResult((grid, stack) => {
             for (let i = 0; i <= 9; i++) {
                 let organ = grid.get(i)
                 if (organ && organ.hasNBT() && organ.nbt.contains('chestcavity:organ_compatibility')) {
-                    return Item.of(organ.id);
+                    return Item.of(organ.id)
                 }
             }
-            return;
-        });
+            return
+        })
 
 
     event.shapeless('kubejs:candy_bag', ['kubejs:candy', 'kubejs:ice_candy', 'kubejs:water_candy', 'kubejs:fire_candy', 'kubejs:wind_candy'])
@@ -222,7 +236,7 @@ ServerEvents.recipes(event => {
     event.shaped('kubejs:prismarine_crown', [
         ['', 'iceandfire:siren_tear', ''],
         ['', 'kubejs:broken_prismarine_crown', ''],
-        ['', 'witherstormmod:command_block_book', '']])
+        ['', 'twilightforest:charm_of_life_2', '']])
 
     event.shaped('kubejs:jet_propeller', [
         ['create:iron_sheet', '', 'create:iron_sheet'],
@@ -241,5 +255,10 @@ ServerEvents.recipes(event => {
 
     event.shapeless('kubejs:advanced_chest_opener', ['#forge:dyes/cyan', 'chestcavity:chest_opener', '#forge:dyes/cyan'])
 
-    event.shapeless('kubejs:command_spell_book', ['witherstormmod:command_block_book', 'kubejs:disenchantment_book'])
+
+
+    event.shaped('cold_sweat:boiler', [
+        ['#forge:cobblestone', '#forge:cobblestone', '#forge:cobblestone'],
+        ['#forge:cobblestone', '', '#forge:cobblestone'],
+        ['#cold_sweat:boiler_craftable_deepslate', 'supplementaries:flint_block', '#cold_sweat:boiler_craftable_deepslate']])
 })

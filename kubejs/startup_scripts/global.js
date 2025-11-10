@@ -1,4 +1,4 @@
-// priority: 1
+// priority: 1000
 Platform.mods.kubejs.name = 'No Flesh Within Chest'
 global.ORGAN_LIST = []
 
@@ -23,12 +23,8 @@ global.MAX_MANA = { key: 'irons_spellbooks:max_mana', name: 'kubejsMaxMana', ope
 global.KNOCKBACK_RESISTANCE = { key: 'minecraft:generic.knockback_resistance', name: 'kubejsKnockbackResistance', operation: 'addition' }
 global.ATTACK_RANGE = { key: 'forge:attack_range', name: 'kubejsAttackRange', operation: 'addition' }
 global.REACH_DISTANCE = { key: 'forge:reach_distance', name: 'kubejsReachRange', operation: 'addition' }
-global.CRITICAL_HIT = { key: 'obscure_api:critical_hit', name: 'kubejsCriticalHit', operation: 'addition' }
-global.CRITICAL_DAMAGE = { key: 'obscure_api:critical_damage', name: 'kubejsCriticalDamage', operation: 'addition' }
-global.PARRY = { key: 'obscure_api:parry', name: 'kubejsParry', operation: 'addition' }
-global.DODGE = { key: 'obscure_api:dodge', name: 'kubejsDodge', operation: 'addition' }
-global.REGENERATION = { key: 'obscure_api:regeneration', name: 'kubejsRegeneration', operation: 'addition' }
-global.PENETRATION = { key: 'obscure_api:penetration', name: 'kubejsPenetration', operation: 'addition' }
+global.CRITICAL_HIT = { key: 'kubejs:critical_hit', name: 'kubejsCriticalHit', operation: 'addition' }
+global.CRITICAL_DAMAGE = { key: 'kubejs:critical_damage', name: 'kubejsCriticalDamage', operation: 'addition' }
 global.SUMMON_DAMAGE = { key: 'irons_spellbooks:summon_damage', name: 'kubejsSummonDamage', operation: 'addition' }
 global.BLOOD_SPELL_DAMAGE = { key: 'irons_spellbooks:blood_spell_power', name: 'kubejsBloodSpellDamage', operation: 'addition' }
 global.HOLY_SPELL_DAMAGE = { key: 'irons_spellbooks:holy_spell_power', name: 'kubejsHolySpellDamage', operation: 'addition' }
@@ -36,6 +32,7 @@ global.LUCK = { key: 'minecraft:generic.luck', name: 'kubejsLuck', operation: 'a
 global.LUCK_MULTI_BASE = { key: 'minecraft:generic.luck', name: 'kubejsLuckMultiBase', operation: 'multiply_base' }
 global.ATTACK_UP_MULTI_BASE = { key: 'minecraft:generic.attack_damage', name: 'kubejsAttackDamageMultiBase', operation: 'multiply_base' }
 global.ARMOR_MULTI_BASE = { key: 'minecraft:generic.armor', name: 'kubejsArmorMultiBase', operation: 'multiply_base' }
+
 
 global.ATTRIBUTE_MAP = {
     'kubejsAttackDamage': global.ATTACK_UP,
@@ -56,10 +53,6 @@ global.ATTRIBUTE_MAP = {
     'kubejsReachRange': global.REACH_DISTANCE,
     'kubejsCriticalHit': global.CRITICAL_HIT,
     'kubejsCriticalDamage': global.CRITICAL_DAMAGE,
-    'kubejsParry': global.PARRY,
-    'kubejsDodge': global.DODGE,
-    'kubejsRegeneration': global.REGENERATION,
-    'kubejsPenetration': global.PENETRATION,
     'kubejsSummonDamage': global.SUMMON_DAMAGE,
     'kubejsBloodSpellDamage': global.BLOOD_SPELL_DAMAGE,
     'kubejsHolySpellDamage': global.HOLY_SPELL_DAMAGE,
@@ -124,6 +117,10 @@ global.TYPE_MAP = {
     'kubejs:enchant_only': Text.gold(Text.translatable("kubejs.tooltips.enchant_only")),
     'kubejs:enchant': Text.gold(Text.translatable("kubejs.tooltips.enchant")),
     'kubejs:auto_active': Text.gold(Text.translatable("kubejs.tooltips.auto_active")),
+    'kubejs:flame': Text.red(Text.translatable("kubejs.tooltips.flame")),
+    'kubejs:ice': Text.blue(Text.translatable("kubejs.tooltips.ice")),
+    'kubejs:temperature': Text.gold(Text.translatable("kubejs.tooltips.temperature")),
+    'kubejs:temperature_only': Text.gold(Text.translatable("kubejs.tooltips.temperature_only")),
 }
 
 
@@ -180,6 +177,8 @@ global.SCORE_MAP = {
     'chestcavity:impact_resistant': Text.translatable("kubejs.chestcavity.impact_resistant"),
     'chestcavity:rotgut': Text.translatable("kubejs.chestcavity.rotgut"),
     'chestcavity:ease_of_access': Text.translatable("kubejs.chestcavity.ease_of_access"),
+    'chestcavity:burning_point': Text.translatable("kubejs.chestcavity.burning_point"),
+    'chestcavity:freezing_point': Text.translatable("kubejs.chestcavity.freezing_point"),
 }
 
 global.SCORE_HOVER_MAP = {
@@ -234,6 +233,8 @@ global.SCORE_HOVER_MAP = {
     'chestcavity:impact_resistant': Text.translatable("kubejs.chestcavity.hover.impact_resistant"),
     'chestcavity:rotgut': Text.translatable("kubejs.chestcavity.hover.rotgut"),
     'chestcavity:ease_of_access': Text.translatable("kubejs.chestcavity.hover.ease_of_access"),
+    'chestcavity:burning_point': Text.translatable("kubejs.chestcavity.hover.burning_point"),
+    'chestcavity:freezing_point': Text.translatable("kubejs.chestcavity.hover.freezing_point"),
 }
 
 global.organCharmNbtMap = {

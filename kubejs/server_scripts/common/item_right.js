@@ -1,63 +1,64 @@
+// priority: 500
 ItemEvents.rightClicked('biomancy:healing_additive', event => {
-    let player = event.player;
-    let item = event.item;
+    let player = event.player
+    let item = event.item
     if (event.getHand() == "off_hand") {
-        let organ = player.getMainHandItem();
+        let organ = player.getMainHandItem()
         if (organ.hasNBT() && organ.nbt.contains('chestcavity:organ_compatibility')) {
             organ.nbt.remove('chestcavity:organ_compatibility')
-            item.shrink(1);
+            item.shrink(1)
         } else {
-            player.tell('似乎该物品不需要进行抗排异')
+            player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.healing_additive.1' }))
         }
     } else {
-        player.tell('如果要使用抗排异功能，请将药物放在副手，器官置于主手')
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.healing_additive.2' }))
     }
 })
 
 ItemEvents.rightClicked('kubejs:unbreakable_core', event => {
-    let player = event.player;
-    let item = event.item;
+    let player = event.player
+    let item = event.item
     if (event.getHand() != "off_hand") {
-        player.tell('如果要使用不毁加持功能，请将不毁核心放在副手，物品置于主手')
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.unbreakable_core.1' }))
         return
     }
     let unbreakone = player.getMainHandItem()
     if (unbreakone?.nbt && unbreakone.nbt?.Unbreakable) {
-        player.tell('该物品已进行过不毁加持！')
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.unbreakable_core.2' }))
         return
     }
     if (!unbreakone.hasEnchantment('minecraft:unbreaking', 1)) {
-        player.tell('不满足耐久要求！')
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.unbreakable_core.3' }))
         return
     }
     let enchantlevel = unbreakone.getEnchantmentLevel('minecraft:unbreaking')
     if (enchantlevel < 8) {
-        player.tell('不满足耐久要求！')
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.unbreakable_core.3' }))
         return
     }
     unbreakone.nbt.Enchantments = unbreakone.nbt.Enchantments.filter(function (unbreakone) {
         return unbreakone.id != 'minecraft:unbreaking'
-    });
+    })
     unbreakone.nbt.merge({ Unbreakable: 1 })
-    item.shrink(1);
+    item.shrink(1)
 })
 
 ItemEvents.rightClicked('kubejs:disenchantment_book', event => {
-    let player = event.player;
-    let item = event.item;
+    let player = event.player
+    let item = event.item
     if (event.getHand() != "off_hand") {
-        player.tell('如果要使用祛魔功能，请将祛魔书放在副手，物品置于主手')
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.disenchantment_book.1' }))
         return
     }
-    let disenchantedone = player.getMainHandItem()
-    if (!disenchantedone || !disenchantedone.enchanted) {
-        player.tell('没有可取下的附魔！')
+    let weapon = player.getMainHandItem()
+    if (!weapon || !weapon.isEnchanted()) {
+        player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.disenchantment_book.2' }))
         return
     }
 
     let enchantList = []
     let levelList = []
-    disenchantedone.enchantments.forEach((name, level) => {
+    weapon.allEnchantments.forEach((name, level) => {
         enchantList.push(name)
         levelList.push(level)
     })
@@ -65,10 +66,20 @@ ItemEvents.rightClicked('kubejs:disenchantment_book', event => {
         return
     }
     let setlength = enchantList.length
-    let res = Math.ceil((Math.random() * setlength))
-    item.shrink(1)
-    disenchantedone.enchantments.clear()
-    player.give(Item.of('minecraft:enchanted_book').enchant(enchantList[res - 1], levelList[res - 1]))
+    let random = Math.ceil((Math.random() * setlength))
+
+    if (item.getCount() > 1) {
+        item.shrink(1)
+    } else {
+        player.setOffHandItem(Item.of('minecraft:air'))
+    }
+    if (weapon.getCount() > 1) {
+        weapon.shrink(1)
+    } else {
+        player.setMainHandItem(Item.of('minecraft:air'))
+    }
+
+    player.give(Item.of('minecraft:enchanted_book').enchant(enchantList[random - 1], levelList[random - 1]))
 })
 
 ItemEvents.rightClicked('hexerei:selenite_shard', event => {
@@ -114,14 +125,10 @@ ItemEvents.rightClicked('kubejs:advanced_chest_opener', event => {
         if (getDeathStage + 1 >= curStage) return
     }
 
-    // 如果命令方块允许开胸，会导致凋零风暴无法死亡
-    if (target.type == 'witherstormmod:command_block') return
-
     player.swing()
     let painlessOper = event.item.enchantments.containsKey('kubejs:painless_operation')
     let creativeOper = event.item.enchantments.containsKey('kubejs:creative_operation')
 
-    let invName = target.getDisplayName().getString() + "'s "
     let optional = $ChestCavityEntity.of(target)
     if (optional.isPresent()) {
         let chestCavityEntity = optional.get()
@@ -131,12 +138,26 @@ ItemEvents.rightClicked('kubejs:advanced_chest_opener', event => {
                 target.attack(DamageSource.GENERIC, 4)
             }
             if (target.isAlive()) {
+                $CommonForgeEventBusSubscriber.addToCheckMap(player, cc)
                 cc.ccBeingOpened = cc
                 let inv = $ChestCavityUtil.openChestCavity(cc)
                 player.getChestCavityInstance().ccBeingOpened = cc
+
+                let invName = Text.of(target.getDisplayName().getString())
+                    .append($Serializer.fromJsonLenient({ translate: "title.name.suffix" }))
+                    .append($Serializer.fromJsonLenient({ translate: "title.chestcavity" }))
+
                 player.openMenu(new $SimpleMenuProvider((i, playerInventory) => {
                     return new $ChestCavityScreenHandler(i, playerInventory, inv)
-                }, Text.translatable(invName + "Chest Cavity")))
+                }, invName))
+            }
+        } else {
+            if (!target.getEquipment('chest').isEmpty()) {
+                player.setStatusMessage($Serializer.fromJsonLenient({ translate: 'tip.chestopener.fail.obstructed' }))
+                player.playSound("minecraft:chain_hit", 0.75, 1.0)
+            } else {
+                player.setStatusMessage($Serializer.fromJsonLenient({ translate: 'tip.chestopener.fail.healthy' }))
+                player.playSound("minecraft:armor_equip_turtle", 0.75, 1.0)
             }
         }
     }

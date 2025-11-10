@@ -1,4 +1,4 @@
-// priority: 5
+// priority: 500
 const LEADING_SYMBOL = Text.gold('● ')
 
 function addForTextLines(text, textLines, initNum) {
@@ -67,11 +67,11 @@ ItemEvents.tooltip((tooltip) => {
                             Text.of(Text.translatable("kubejs.tooltips.organ_score.3")).red(),
                             Text.of(Text.translatable("kubejs.tooltips.organ_score.8")).yellow().bold(),
                             Text.of(Text.translatable("kubejs.tooltips.organ_score.9")).red(),
-                        ]);
+                        ])
                     }
             }
-        });
-        return;
+        })
+        return
     }
 
     global.ORGAN_LIST.forEach(organ => {

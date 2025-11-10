@@ -1,9 +1,9 @@
-// priority: 10
+// priority: 500
 NetworkEvents.dataReceived('ogran_key_pressed', event => {
     let player = event.player
-    if (!player) return;
+    if (!player) return
     let coolDowns = player.getCooldowns()
-    let typeMap = getPlayerChestCavityTypeMap(player);
+    let typeMap = getPlayerChestCavityTypeMap(player)
     let onlySet = new Set()
     if (typeMap.has('kubejs:key_pressed')) {
         let organList = typeMap.get('kubejs:key_pressed')
@@ -54,9 +54,9 @@ const organPlayerKeyPressedOnlyStrategies = {
         let removedCurse = randomGet(curseList)
         item.nbt.Enchantments = item.nbt.Enchantments.filter(function (item) {
             return item.id != removedCurse
-        });
+        })
         player.addItemCooldown('kubejs:disenchantment_paper', 20 * 600)
-        player.setStatusMessage([Text.lightPurple('祛魔虫'), '吃下了一个', Text.red('诅咒附魔')])
+        player.setStatusMessage($Serializer.fromJsonLenient({ translate: 'kubejs.status_msg.disenchantment_paper.1' }))
         let count = event.player.persistentData.getInt(warpCount) ?? 0
         updateWarpCount(event.player, count + 5)
     },
@@ -142,7 +142,7 @@ const organPlayerKeyPressedOnlyStrategies = {
     },
     'kubejs:excited_appendix': function (event, organ) {
         let player = event.player
-        let itemMap = getPlayerChestCavityItemMap(player);
+        let itemMap = getPlayerChestCavityItemMap(player)
         let amplifier = Math.max(0, player.getChestCavityInstance().organScores.get(new ResourceLocation('chestcavity', 'explosive')) * 0.2)
         let duration = Math.max(0, player.getChestCavityInstance().organScores.get(new ResourceLocation('chestcavity', 'creepy')) * 10)
         let cooldown = 0
@@ -176,11 +176,11 @@ const organPlayerKeyPressedOnlyStrategies = {
             beneficialEffects.forEach(ctx => {
                 player.removeEffect(ctx.effect)
                 if (ctx.getAmplifier() > 0) {
-                    player.potionEffects.add(ctx.effect, ctx.getDuration() * 2, ctx.getAmplifier() - 1)
+                    player.potionEffects.add(ctx.effect, Math.min(ctx.getDuration() * 2, 20 * 60 * 3), ctx.getAmplifier() - 1)
                 }
             })
         }
-        player.addItemCooldown('kubejs:blood_crystal', 20 * 90)
+        player.addItemCooldown('kubejs:blood_crystal', 20 * 120)
     },
     'kubejs:amethyst_magic_core': function (event, organ) {
         let player = event.player
@@ -290,25 +290,6 @@ const organPlayerKeyPressedOnlyStrategies = {
         updateWarpCount(player, 0)
         player.addItemCooldown('kubejs:go_camping', 20 * 10)
     },
-    'kubejs:nether_star_shard': function (event, organ) {
-        let player = event.player
-        let ray = player.rayTrace(32, false)
-        if (ray.entity && ray.entity.isLiving() && ray.entity.type == 'witherstormmod:wither_storm') {
-            /** @type {Internal.Entity} */
-            let entity = ray.entity
-            let curPhase = entity?.nbt.getInt('Phase')
-            switch (true) {
-                case curPhase < 5: {
-                    entity.mergeNbt({ 'Phase': curPhase + 1, 'ConsumedEntities': 30000000 })
-                    break
-                }
-                case curPhase >= 5:
-                    entity.mergeNbt({ 'Phase': 7, 'ConsumedEntities': 30000000 })
-                    break
-            }
-            player.addItemCooldown('kubejs:nether_star_shard', 20 * 10)
-        }
-    },
     'kubejs:potoo_beak': function (event, organ) {
         let player = event.player
         let level = event.level
@@ -346,7 +327,7 @@ const organPlayerKeyPressedOnlyStrategies = {
                 }
             }
         } else {
-            player.tell(Text.translatable("kubejs.msg.treasure_detector_feather.1"))
+            player.tell($Serializer.fromJsonLenient({ translate: 'kubejs.msg.treasure_detector_feather.1' }))
             return
         }
 
@@ -363,11 +344,141 @@ const organPlayerKeyPressedOnlyStrategies = {
         let mapItem = $MapItem.create(level, pos.x, pos.z, 1, true, true)
         $MapItem.renderBiomePreviewMap(level, mapItem)
         $MapItemSavedData.addTargetDecoration(mapItem, pos, "+", $MapDecorationType.RED_X)
-        mapItem = mapItem.withName(Text.translatable("map.kubejs.lost_treasure"))
-        let placementState = $ModBlocks.CHEST.get().defaultBlockState();
+        mapItem = mapItem.withName($Serializer.fromJsonLenient({ translate: "map.kubejs.lost_treasure" }))
+        let placementState = $ModBlocks.CHEST.get().defaultBlockState()
         level.setBlock(pos, placementState, 2)
         $RandomizableContainerBlockEntity.setLootTable(level, level.getRandom(), pos, table)
         player.give(mapItem)
         player.addItemCooldown('kubejs:treasure_detector_feather', 20 * 600)
     },
+    'kubejs:knightphantom_ghost': function (event, organ) {
+
+    },
+    'kubejs:ice_intestine': function (event, organ) {
+        let player = event.player
+        let oldTemp = (-1) * ColdSweat.getTemperature(player, 'body')
+        let mana = player.getAttributeTotalValue("irons_spellbooks:max_mana") - getPlayerMagicData(player).getMana()
+        if (mana > 0 && oldTemp > 0) {
+            let curTemp = Math.max(oldTemp - mana, 0)
+            let curMana = Math.max(mana - oldTemp, 0)
+            ColdSweat.setTemperature(player, 'core', ((-1) * curTemp - ColdSweat.getTemperature(player, 'base')))
+            getPlayerMagicData(player).setMana(player.getAttributeTotalValue("irons_spellbooks:max_mana") - curMana - Math.max(player.getAttributeTotalValue("irons_spellbooks:mana_regen"), 1))
+            player.addItemCooldown('kubejs:ice_intestine', 20 * 15)
+        }
+    },
+    'kubejs:twilight_broken_lich_crown': function (event, organ) {
+        let player = event.player
+        let level = event.level
+        let magic = getPlayerMagicData(player)
+        let num = 0
+        let attack = 0
+        let health = 0
+        let type = []
+        let entityList = getLivingWithinRadius(level, new Vec3(player.x, player.y, player.z), 10)
+        entityList.forEach(entity => {
+            if (tagCheck(entity, "irons_spellbooks:summons") || tagCheck(entity, "forge:golems") || entity.type == "twilightforest:loyal_zombie") {
+                if (num >= 30) return
+                num += 1
+                health += entity.getHealth()
+                if (entity.attributes.hasAttribute("minecraft:generic.attack_damage")) {
+                    attack += entity.getAttributeTotalValue("minecraft:generic.attack_damage")
+                }
+                if (type.indexOf(entity.entityType) == -1) {
+                    type.push(entity.entityType)
+                }
+                player.level.spawnParticles($ParticleTypes.EXPLOSION, false, entity.x, entity.y, entity.z, 0, 1, 0, 1, 0.5)
+                entity.discard()
+            }
+        })
+        if (num == 0) return
+        let mana = Math.min(magic.getMana() + health, player.getAttributeTotalValue("irons_spellbooks:max_mana"))
+        player.modifyAttribute("minecraft:generic.attack_damage", 'tLichSpine', attack, 'addition')
+        player.modifyAttribute("irons_spellbooks:spell_power", 'tLichSpine', (type.length) / 20, 'addition')
+        player.absorptionAmount += num
+        magic.setMana(mana - Math.max(player.getAttributeTotalValue("irons_spellbooks:mana_regen"), 1))
+        player.server.scheduleInTicks(20 * 60, ctx => {
+            player.removeAttribute("minecraft:generic.attack_damage", 'tLichSpine')
+            player.removeAttribute("irons_spellbooks:spell_power", 'tLichSpine')
+            player.absorptionAmount = Math.min(0, player.absorptionAmount - num)
+        })
+        player.addItemCooldown('kubejs:twilight_broken_lich_crown', 20 * 60)
+    },
+    'kubejs:cloud_pyramid': function (event, organ) {
+        let player = event.player
+        let magicData = getPlayerMagicData(player)
+        let instance = player.getChestCavityInstance()
+        let buoyant = organ.tag.getFloat('buoyant_factor')
+        if (!buoyant) {
+            player.removeEffect("minecraft:jump_boost")
+            player.potionEffects.add("minecraft:slow_falling", 20 * 5, 0, false, false)
+            buoyant = instance.organScores.getOrDefault(new ResourceLocation('chestcavity', 'buoyant'), 0)
+            if (magicData.getMana() < (buoyant - 4) * 100) {
+                return
+            }
+            magicData.setMana(magicData.getMana() - (buoyant - 4) * 100)
+            instance.organScores.put(new ResourceLocation('chestcavity', 'buoyant'), new $Float(0))
+            organ.tag.putFloat('buoyant_factor', buoyant)
+        } else {
+            player.potionEffects.add("minecraft:slow_falling", 20 * 1, 0, false, false)
+            player.potionEffects.add("minecraft:jump_boost", 20 * 99999, 0, false, false)
+            instance.organScores.put(new ResourceLocation('chestcavity', 'buoyant'), new $Float(buoyant))
+            organ.tag.putFloat('buoyant_factor', 0)
+        }
+        player.addItemCooldown('kubejs:cloud_pyramid', 20 * 0.2)
+    },
+    'kubejs:creeper_appendix': function (event, organ) {
+        let player = event.player
+        let itemMap = getPlayerChestCavityItemMap(player)
+        let temperature = ColdSweat.getTemperature(player, 'body')
+        let causesFire = false
+        let explosive = player.getChestCavityInstance().organScores.get(new ResourceLocation('chestcavity', 'explosive'))
+        let creepy = player.getChestCavityInstance().organScores.get(new ResourceLocation('chestcavity', 'creepy'))
+        let strength = (explosive + creepy) * 2
+        let num = 1
+        if (itemMap.has('minecraft:gunpowder')) {
+            strength = Math.min(12, strength + itemMap.get('minecraft:gunpowder').length * 4)
+        }
+        if (temperature > 0) {
+            causesFire = true
+            num += Math.min(15, Math.floor(temperature / 10))
+            ColdSweat.setTemperature(player, 'core', -ColdSweat.getTemperature(player, 'base'))
+        }
+        player.level.createExplosion(player.x, player.y, player.z).exploder(player).strength(strength).causesFire(causesFire).explode()
+        let l = 3
+        for (var i = 1; i < num; i++) {
+            for (var f = - JavaMath.PI / 2; f <= JavaMath.PI / 2; f += JavaMath.PI * 2 / (6 + i * 2)) {
+                for (var r = 0; r <= JavaMath.PI * 2; r += JavaMath.PI * 2 / i / 6) {
+                    player.level.createExplosion(player.x + i * l * Math.cos(r) * Math.cos(f), player.y + i * l * Math.sin(f), player.z + i * l * Math.sin(r) * Math.cos(f)).exploder(player).strength(strength).causesFire(causesFire).explode()
+                }
+            }
+        }
+        player.addItemCooldown('kubejs:creeper_appendix', 20 * (num + strength))
+    },
+    'kubejs:carminite_reactor_core': function (event, organ) {
+        let player = event.player
+        let level = event.level
+        let ray = player.rayTrace(16, false)
+        if (!ray.hit) return
+        let blockPos = new BlockPos(ray.hitX, ray.hitY, ray.hitZ)
+        let blockState = Block.getBlock("twilightforest:carminite_reactor").blockStates[0]
+        if (level.getBlock(blockPos) != "minecraft:bedrock") {
+            if (level.setBlock(blockPos, blockState, 2)) {
+                player.addItemCooldown('kubejs:carminite_reactor_core', 20 * 60)
+            }
+        }
+    }
+}
+
+/**
+ * 
+ * @param {Internal.Entity} entity 
+ * @param {string} tag 
+ */
+function tagCheck(entity, tag) {
+    if (entity.entityType.tags.anyMatch(ele => ele.location() === tag)) {
+        return true
+    }
+    else {
+        return false
+    }
 }

@@ -1,4 +1,4 @@
-// priority: 10
+// priority: 500
 /**
  * 实体掉落策略
  */
@@ -87,9 +87,6 @@ const entityLootStrategies = {
  * @type {Object<string,function(Internal.LootContextJS, organ):void>}
  */
 const entityLootOnlyStrategies = {
-    'kubejs:greed_shard': function (event, organ) {
-        event.addLoot('lightmanscurrency:coin_iron')
-    },
     'kubejs:infinity_force': function (event, organ) {
         if (Math.random() > Math.max(0.03 * event.killerEntity.getLuck(), 0.03)) {
             return

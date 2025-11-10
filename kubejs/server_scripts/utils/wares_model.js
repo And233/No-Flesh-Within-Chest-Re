@@ -1,3 +1,4 @@
+// priority: 1000
 function Wares(id) {
     this.paymentItems = []
     this.ordered = false
@@ -126,7 +127,6 @@ const ChallengeWares = [
 
 
 const EggWares = [
-    new SimpleWares([Item.of('lightmanscurrency:coin_gold').withCount(3)], [Item.of('bookwyrms:book_wyrm_spawn_egg')], 4),
     new SimpleWares([Item.of('lightmanscurrency:coin_gold').withCount(6)], [Item.of('hexerei:crow_spawn_egg')], 4),
     new SimpleWares([Item.of('lightmanscurrency:coin_emerald').withCount(1)], [Item.of('unusualprehistory:rex_spawn_egg')], 4),
     new SimpleWares([Item.of('lightmanscurrency:coin_gold').withCount(1)], [Item.of('bettas:betta_fish_spawn_egg')], 16),
@@ -139,7 +139,6 @@ const SpecialWares = [
     new SimpleWares([Item.of('lightmanscurrency:coin_emerald').withCount(1)], [Item.of('tetra:forged_workbench')], 4),
     new SimpleWares([Item.of('lightmanscurrency:coin_emerald').withCount(1)], [Item.of('tetra:chthonic_extractor')], 4),
     new SimpleWares([Item.of('lightmanscurrency:coin_emerald').withCount(1)], [Item.of('tetra:chthonic_extractor')], 4),
-    new SimpleWares([Item.of('lightmanscurrency:coin_emerald').withCount(1)], [Item.of('dimdungeons:item_blank_theme_key', '{theme:2}')], 4),
     new SimpleWares([Item.of('lightmanscurrency:coin_gold').withCount(1)], [Item.of('somebosses:one_eyed_wrait_in_a_bottle')], 3),
     new SimpleWares([Item.of('lightmanscurrency:coin_gold').withCount(1)], [Item.of('somebosses:rusty_sword_relic')], 3),
     new SimpleWares([Item.of('lightmanscurrency:coin_gold').withCount(1)], [Item.of('somebosses:disgusting_pendant')], 3),

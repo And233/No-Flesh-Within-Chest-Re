@@ -1,3 +1,4 @@
+// priority: 500
 /**
  * 精英怪造成伤害
  * @param {Internal.LivingDamageEvent} event 
@@ -103,36 +104,5 @@ const championPlayerBearStrategies = {
             player.setHealth(player.getHealth() - Math.ceil(player.getMaxHealth() * 0.1))
         }
         event.amount = 0
-    },
-    'grudge': function (event, data) {
-        let player = event.entity
-        if (Math.random() < 1) {
-            let random = Math.ceil((Math.random() * grudgeCurseEnchantList.length))
-            let armor = Item.of('minecraft:air')
-            switch (Math.ceil((Math.random() * 4))) {
-                case 1:
-                    armor = player.getHeadArmorItem()
-                    if (armor.id == 'minecraft:air') return
-                    player.setHeadArmorItem(armor.enchant(curseEnchantList[random - 1], 1))
-                    break
-                case 2:
-                    armor = player.getChestArmorItem()
-                    if (armor.id == 'minecraft:air') return
-                    player.setChestArmorItem(armor.enchant(curseEnchantList[random - 1], 1))
-                    break
-                case 3:
-                    armor = player.getLegsArmorItem()
-                    if (armor.id == 'minecraft:air') return
-                    player.setLegsArmorItem(armor.enchant(curseEnchantList[random - 1], 1))
-                    break
-                case 4:
-                    armor = player.getFeetArmorItem()
-                    if (armor.id == 'minecraft:air') return
-                    player.setFeetArmorItem(armor.enchant(curseEnchantList[random - 1], 1))
-                    break
-                default:
-                    break
-            }
-        }
     },
 };

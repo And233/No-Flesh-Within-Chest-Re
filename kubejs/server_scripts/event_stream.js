@@ -1,4 +1,4 @@
-// priority: 0
+// priority: 999
 /**
  * 事件流，用于某些事件的连续处理
  * 目前仅用作伤害事件的连续处理
@@ -28,6 +28,8 @@ global.LivingHurtByPlayer = event => {
     vulnerableEntityHurt(event, data)
     organCharmEntityHurtByPlayer(event, data)
     championEntityHurtByPlayer(event, data)
+    overloadEntityHurtByPlayer(event, data)
+    criticalAttributeEntityHurtByPlayer(event, data)
     if (data.returnDamage != 0) {
         player.attack(data.damageSource, data.returnDamage)
     }
@@ -74,7 +76,25 @@ global.LivingHurtByOthers = event => {
     }
     vulnerableEntityHurt(event, data)
     organCharmPlayerHurtByOthers(event, data)
+    overloadEntityHurtByOthers(event, data)
+    iceEntityHurtByOthers(event, data)
     // 龙化必须在实际伤害结算前结算，因为额外生命变化不被视作实际受伤
     dragonPowerPlayerHurtByOthers(event, data)
     championPlayerHurtByOthers(event, data)
+}
+
+
+
+/**
+ * 玩家暴击伤害计算
+ * @param {Internal.LivingHurtEvent} event 
+ * @param {EntityHurtCustomModel} data 
+ */
+function criticalAttributeEntityHurtByPlayer(event, data) {
+    let player = event.source.player
+    let criticalChance = player.getAttribute('kubejs:critical_hit').getValue()
+    if (criticalChance > Math.random()) {
+        let criticalBonus = player.getAttribute('kubejs:critical_damage').getValue()
+        event.amount = event.amount * criticalBonus
+    }
 }
